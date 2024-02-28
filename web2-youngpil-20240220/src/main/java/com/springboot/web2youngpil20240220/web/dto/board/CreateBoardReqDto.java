@@ -12,6 +12,7 @@ public class CreateBoardReqDto {
 	private String content;
 	
 	public Board toEntity() {
+		
 		return Board.builder()
 				.title(title)
 				.usercode(usercode)

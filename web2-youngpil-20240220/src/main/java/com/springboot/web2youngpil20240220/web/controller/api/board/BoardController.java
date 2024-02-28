@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.web2youngpil20240220.service.board.BoardService;
+import com.springboot.web2youngpil20240220.web.dto.CMRespDto;
 import com.springboot.web2youngpil20240220.web.dto.board.CreateBoardReqDto;
+import com.springboot.web2youngpil20240220.web.dto.board.CreateBoardRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,15 +54,15 @@ public class BoardController {
 	@PostMapping("/content")
 	public ResponseEntity<?> addBoardNow(@RequestBody CreateBoardReqDto createBoardReqDto) {
 		//json으로 받을때는 @RequestBody 붙여줘야함
-		boolean responseData = false;
 		
+			CreateBoardRespDto createBoardRespDto = null;
 		try {
-			responseData = boardService.createBoard(createBoardReqDto);
+			System.out.println(createBoardReqDto);
+			createBoardRespDto = boardService.createBoard(createBoardReqDto);
 		} catch (Exception e) {
-			return ResponseEntity.internalServerError().body(responseData);
+			return ResponseEntity.internalServerError().body(new CMRespDto<>(-1,"게시글 등록실패",createBoardRespDto));
 		}
-		
-		return ResponseEntity.ok().body(responseData);
+		return ResponseEntity.ok().body(new CMRespDto<>(1,"게시글 등록성공", createBoardRespDto));
 	}
 	
 }

@@ -5,7 +5,8 @@
 
   <mapper namespace="com.springboot.web2youngpil20240220.domain.board.BoardRepository">
 	  
-	  <insert id="save" parameterType="com.springboot.web2youngpil20240220.domain.board.Board">
+	  <insert id="save" parameterType="com.springboot.web2youngpil20240220.domain.board.Board"
+	  useGeneratedKeys="true" keyProperty="boardcode">
 		  insert into
 		  	board_mst
 		  values(

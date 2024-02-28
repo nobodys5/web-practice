@@ -1,9 +1,6 @@
-package com.springboot.web2youngpil20240220.domain.board;
+package com.springboot.web2youngpil20240220.web.dto.board;
 
 import java.time.LocalDateTime;
-
-import com.springboot.web2youngpil20240220.web.dto.board.CreateBoardReqDto;
-import com.springboot.web2youngpil20240220.web.dto.board.CreateBoardRespDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,16 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Board {
-	
+public class CreateBoardRespDto {
+
 	private int boardcode;
 	private String title;
 	private int usercode;
 	private String content;
+	private boolean insertStatus;
 	private LocalDateTime createdate;
 	private LocalDateTime updatedate;
 	
-	public CreateBoardRespDto toCreateBoardDto(boolean insertStatus) {
+	public CreateBoardRespDto toCreateBoardRespDto(boolean insertStatus) {
 		return CreateBoardRespDto.builder()
 				.boardcode(boardcode)
 				.title(title)
@@ -32,5 +30,4 @@ public class Board {
 				.insertStatus(insertStatus)
 				.build();
 	}
-	
 }
