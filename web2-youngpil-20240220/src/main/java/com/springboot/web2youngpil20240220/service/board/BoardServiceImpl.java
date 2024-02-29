@@ -6,6 +6,7 @@ import com.springboot.web2youngpil20240220.domain.board.Board;
 import com.springboot.web2youngpil20240220.domain.board.BoardRepository;
 import com.springboot.web2youngpil20240220.web.dto.board.CreateBoardReqDto;
 import com.springboot.web2youngpil20240220.web.dto.board.CreateBoardRespDto;
+import com.springboot.web2youngpil20240220.web.dto.board.ReadBoardRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,5 +30,12 @@ public class BoardServiceImpl implements BoardService{
 		return boardEntity.toCreateBoardDto(insertStatus);
 	}
 
+	@Override
+	public ReadBoardRespDto readeBoard(int boardcode) throws Exception {
+		
+		return boardRepository.findBoardByBoardcode(boardcode).toReadBoardDto();
+	}
+
+	
 	
 }

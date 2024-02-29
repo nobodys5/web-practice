@@ -1,0 +1,25 @@
+
+
+1.JSON 형태의 값을 postman에 던져준다.(usercode,title,content)
+2.Controller - 요청형태와 맵핑을 통해 메소드를 찾는다.
+3.매개변수 @Reqbody ReqDto -> 매개변수가 많아지니깐 그냥 하나의
+객체로 받는다. -> bean 컨테이너에 객체 공유하여 사용
+4.controller에서 service로 값을 던져준다.(ReqDto)
+5. service에서 ReqDto를 받는다.
+  toEntity라는 메소드를 통해 dto->Entity 로 바꿔준다 Db에 entity를
+넣기위해 바꿔주는용도
+
+6. entity(title, usercode, content, 나머지 자동 boardcode, createdeat,
+updatedate) 그다음 repository로 값을던져줌 -> save라는 메소드가받는다.
+
+7.board.xml 구현하는공간
+
+8.int -> 넣어준 갯수만큼 값을받고
+
+9. true로 나온값을 insertStatus로 던져줌.
+
+10. etity -> respDto를 리턴해준다.(toDto 에서Board로)
+
+11. controller에서 responDto를 받아서 리턴. 
+
+bo

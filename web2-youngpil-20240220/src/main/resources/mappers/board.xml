@@ -18,4 +18,21 @@
 		  		 now()
 		  		 )	
 	  </insert>
+	  
+	  <select id="findBoardByBoardcode" parameterType="Integer"
+	  resultType="com.springboot.web2youngpil20240220.domain.board.Board">
+		  select
+		  		bm.boardcode,
+		  		bm.title,
+		  		bm.usercode,
+		  		um.username,
+		  		bm.content,
+		  		bm.createdate,
+		  		bm.updatedate
+		  from
+		  		board_mst bm
+		  		left outer join user2_mst um on(bm.usercode = um.user_code)
+		  where
+		  		bm.boardcode = #{boardcode}				
+	  </select>
   </mapper>
