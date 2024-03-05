@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.todolist0305.todolist0305.domain.content.TodoRepository">
+	  
+	  <insert id="save" parameterType="com.todolist0305.todolist0305.domain.content.Todo">
+		  insert into
+	  	 content_mst
+		values(
+			  0,
+			  #{content},
+			  #{user_code},
+			  now(),
+			  now()
+			  )
+	  </insert>
+	  
+	  <select id="getTodoListOfIndex" parameterType="Integer" resultType="com.todolist0305.todolist0305.domain.content.Todo">
+		  select
+			um.user_name,
+			cm.content_code,
+			cm.content
+		  from
+		  	content_mst cm
+		  	left outer join user_mst um on(cm.user_code = um.user_code)
+		  order by
+		  	cm.content_code desc
+		  limit #{index}, 10					  
+	  </select>
+	  
+  </mapper>
