@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.checkTodolist.checkTodolist.domain.todo.TodoRepository">
+	  
+	  <insert id="save" parameterType="com.checkTodolist.checkTodolist.domain.todo.Todo">
+		  insert into
+		  		todo_mst
+			values(
+					0,
+					#{todo_content},
+					0,
+					#{importance_flag},
+					now(),
+					now()
+					)		  
+		  
+	  </insert>
+	  
+	  <select id="getTodoListOfIndex" parameterType="hashmap" resultType="com.checkTodolist.checkTodolist.domain.todo.Todo">
+		  select
+		  		todo_code,
+		  		todo_content,
+		  		todo_complete,
+		  		importance_flag,
+		  		create_date,
+		  		update_date
+		  	from
+		  		todo_mst
+		  	where
+		  		<choose>
+					  <when test='type.equals("1")'>
+						  importance_flag = 1
+					  </when>
+				  </choose>	
+		  	order by
+		  		todo_code desc
+		  	limit
+		  		#{index}, #{count}		
+	  </select>
+  </mapper>
