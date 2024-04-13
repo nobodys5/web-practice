@@ -11,6 +11,7 @@ import com.checkTodolist.checkTodolist.domain.todo.Todo;
 import com.checkTodolist.checkTodolist.domain.todo.TodoRepository;
 import com.checkTodolist.checkTodolist.web.controller.dto.CreateTodoReqDto;
 import com.checkTodolist.checkTodolist.web.controller.dto.TodoListRespDto;
+import com.checkTodolist.checkTodolist.web.controller.dto.UpdateTodoReqDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,13 +45,13 @@ public class TodoServiceImpl implements TodoService{
 	}
 
 	@Override
-	public List<TodoListRespDto> getTodoList(int page, int contentCount) throws Exception {
+	public List<TodoListRespDto> getTodoList(String type, int page, int contentCount) throws Exception {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("index", (page - 1) * contentCount); 
 		map.put("count", contentCount);
-		map.put("type", "1");
+		map.put("type", type);
 		
 		List<Todo> todolist = todoRepository.getTodoListOfIndex(map);
 		
@@ -59,6 +60,29 @@ public class TodoServiceImpl implements TodoService{
 			todoListRespDtos.add(todo.toListDto());
 		});
 		return todoListRespDtos;
+	}
+
+	@Override
+	public boolean updateTodoComplete(int todoCode) throws Exception {
+
+		return todoRepository.updateTodoComplete(todoCode) > 0;
+	}
+
+	@Override
+	public boolean updateTodoImportance(int todoCode) throws Exception {
+		
+		return todoRepository.updateTodoImportance(todoCode) > 0;
+	}
+
+	@Override
+	public boolean updateTodo(UpdateTodoReqDto updateTodoReqDto) throws Exception {
+		
+		return todoRepository.updateTodoByTodoCode(updateTodoReqDto.toEntity()) > 0;
+	}
+
+	@Override
+	public boolean removeTodo(int todoCode) throws Exception {
+		return todoRepository.remove(todoCode) > 0;
 	}
 
 }

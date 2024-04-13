@@ -21,23 +21,120 @@
 	  
 	  <select id="getTodoListOfIndex" parameterType="hashmap" resultType="com.checkTodolist.checkTodolist.domain.todo.Todo">
 		  select
-		  		todo_code,
-		  		todo_content,
-		  		todo_complete,
-		  		importance_flag,
-		  		create_date,
-		  		update_date
+		  		tm.todo_code,
+		  		tm.todo_content,
+		  		tm.todo_complete,
+		  		tm.importance_flag,
+		  		
+		  		tt.total_count,
+		  		tc.incomplete_count,
+		  		tm.create_date,
+		  		tm.update_date
 		  	from
-		  		todo_mst
-		  	where
-		  		<choose>
-					  <when test='type.equals("1")'>
+		  		todo_mst tm			<!--아래 코드는 하나의 테이블과 같다 -->
+		  		left outer join (
+		  						SELECT
+									COUNT(*) as total_count
+								FROM
+									todo_mst
+								WHERE
+									<choose>
+					  <when test='type.equals("importance")'>
 						  importance_flag = 1
 					  </when>
+					  <when test='type.equals("complete")'>
+						  todo_complete = 1
+					   </when>
+					   <when test='type.equals("incomplete")'>
+						   todo_complete = 0
+						</when>
+						<otherwise>
+							1=1
+						</otherwise>	   
+				  </choose>	
+				  ) tt on(1=1)
+				  
+				  left outer join (
+		  						SELECT
+									COUNT(*) as incomplete_count
+								FROM
+									todo_mst
+								WHERE
+									todo_complete = 0
+									<if test ='type.equals("importance")'>
+										and importance_flag = 0
+									</if>
+				  
+				  ) tc on(1 = 1)
+				  
+					
+		  	where
+		  	
+		  		<choose> <!--type의 값이 equaul.1에값에서 -> importance로 바뀌어서 url을 /importance로 추가입력 --> 
+						<!-- 만약에  importance가 1이면 url주소를 1로입력해야함 포스트맨요청시  -->			  		
+					  <when test='type.equals("importance")'>
+						  importance_flag = 1
+					  </when>
+					  <when test='type.equals("complete")'>
+						  todo_complete = 1
+					   </when>
+					   <when test='type.equals("incomplete")'>
+						   todo_complete = 0
+						</when>
+						<otherwise>
+							1=1
+						</otherwise>	   
 				  </choose>	
 		  	order by
 		  		todo_code desc
 		  	limit
 		  		#{index}, #{count}		
 	  </select>
+	  
+	  <update id="updateTodoComplete" parameterType="Integer">
+		  
+		  UPDATE
+				todo_mst
+			SET
+				todo_complete = case when todo_complete = 0 then 1 ELSE 0 end
+			WHERE
+				todo_code = #{todo_code};		
+
+		  
+	  </update>
+	  
+	  <update id="updateTodoImportance" parameterType="Integer">
+		  
+		  
+		  UPDATE
+				todo_mst
+			SET
+				importance_flag = case when importance_flag = 0 then 1 ELSE 0 end
+			WHERE
+				todo_code = #{todo_code};	
+		  
+		  
+	  </update>
+	  
+	  
+	  <update id="updateTodoByTodoCode" parameterType="com.checkTodolist.checkTodolist.domain.todo.Todo">
+		  UPDATE
+				todo_mst
+			SET
+				todo_content = #{todo_content},
+				update_date = NOW()
+			WHERE
+				todo_code = #{todo_code};
+		  
+	  </update>
+	  
+	  <delete id="remove" parameterType="Integer">
+		  DELETE
+			FROM
+				todo_mst
+			WHERE
+				todo_code = #{todo_code};	
+		  
+		  
+	  </delete>
   </mapper>
