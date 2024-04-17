@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.study.secyrity2.domain.user.UserRepository">
+	  <select id="finduserByUsername" parameterType="String" resultType="com.study.secyrity2.domain.user.User">
+		SELECT
+			um.USER_code,
+			um.user_name,
+			um.user_email,
+			um.user_id,
+			um.user_password,
+			um.user_roles,
+			um.user_provider,
+			ud.user_profile_img,
+			ud.user_address,
+			ud.user_gender,
+			ud.user_phone
+		FROM
+			user2_mst um
+			LEFT OUTER JOIN user_dtl ud ON(um.user_code = ud.user_code)
+		WHERE
+			user_id = #{username};
+	  
+	  </select>
+	  
+	  <insert id="save" parameterType="com.study.secyrity2.domain.user.User">
+		  insert into
+		  	user2_mst
+		  values
+		  	0,
+		  	#{user_name},
+		  	#{user_email},
+		  	#{user_id},
+		  	#{user_password},
+		  	#{user_roles},
+		  	#{user_provider},
+		  	now(),
+		  	now();
+	  </insert>
+  </mapper>
