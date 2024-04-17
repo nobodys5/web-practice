@@ -6,6 +6,10 @@ const todoContentList = document.querySelector(".todo-content-list");
 const incompleteCountNumber = document.querySelector(".incomplete-count-number");
 const sectionBody = document.querySelector(".section-body");
 
+const modalContainer = document.querySelector(".modal-container");
+const todoAddButton = document.querySelector(".todo-add-button");
+
+
 let page = 1;
 let totalPage = 0;
 
@@ -81,6 +85,8 @@ function errorMessage(request,status,error) {
 }
 
 function getList(data) {
+	
+	setTotalCount(data[0].totalCount);
    
 	incompleteCountNumber.textContent = data[0].incompleteCount;
     for(let content of data) {
@@ -120,16 +126,83 @@ function addEvent() {
 			
 		todoContents[i].querySelector(".complete-check").onchange = () => {
 			/*console.log("complete-check" + todoCode);*/
-			updateStatus("complete", todoCode);
+			
+			let incompleteCount = parseInt(incompleteCountNumber.textContent);
+			console.log("체크확인");//체크가 온오프일때 값이뜨는지 확인
+			console.log(incompleteCount + 1);
+			console.log(todoContents[i].querySelector(".complete-check").checked);
+			
+			if(todoContents[i].querySelector(".complete-check").checked) {
+				incompleteCountNumber.textContent = incompleteCount - 1;
+			}else {
+				incompleteCountNumber.textContent = incompleteCount + 1;
+			}
+			
+			updateCheckStatus("complete", todoContents[i], todoCode);
+
 		}
 		todoContents[i].querySelector(".importance-check").onchange = () => {
-			console.log("importance-check" + todoCode);
+			updateCheckStatus("importance-check" + todoCode);
 		}
 		todoContents[i].querySelector(".trash-button").onclick = () => {
-			console.log("trash-button" + todoCode);
+			/*console.log("trash-button" + todoCode);*/
+			deleteTodo(todoContents[i],todoCode);
+		}
+		
+		const todoContentText = todoContents[i].querySelector(".todo-content-text");
+		const todoContentInput = todoContents[i].querySelector(".todo-content-input");
+		
+		let todoContentValue = null;
+		let eventFlag = false;
+		
+		todoContentText.onclick = () => {
+			todoContentValue = todoContentInput.value;
+			todoContentText.classList.toggole("visible");
+			todoContentInput.classList.toggole("visible");
+			todoContentInput.focus();
+			eventFlag = true;
+		}
+		
+		let updateTodoContent = () => {
+			if(todoContentValue != todoContentInput.value) {
+				
+				$.ajax({
+					tyupe: "put",
+					url: `/api/v1/todolist/todo/${todoCode}`,
+					contentType: "application/json",
+					data: JSON.stringify({"todoCode": todoCode,
+							todo: todoContentInput.value
+							}),
+					async: false,
+					dataType: "json",
+					success: (response) => {
+						if(response.data) {
+							todoContentText.textContent = todoContentInput.value;
+						}
+					},
+					error: errorMessage
+				})
+			}
+				todoContentText.classList.toggle("visible");
+				todoContentInput.classList.toggle("visible");
+		}
+		
+		todoContentInput.onblur = () => {
+			if(eventFlag) {
+				updateTodoContent();
+				}
+				todoContentText.classList.toggle("visible");
+				todoContentInput.classList.toggle("visible");
+			}
+		
+		
+		todoContentInput.onkeyup = () => {
+			if(window.event.keyCode == 13) {
+				eventFlag = false;
+				updateTodoContent();
+			}
 		}
 	}
-	
 	
 }
 
@@ -152,8 +225,82 @@ function updateStatus(type, todoCode) {
 
 function updateCheckStatus(type, todoContent, todoCode) {
 	
+	let result = updateStatus(type, todoCode);
+	/*if((listType == "complete" || listType == "incomplete") && result) {
+		todoContentList.removeChild(todoContent);
+	}*/
+	
+	if(((type == "complete " && (listType == "complete" || listType == "incomplete"))
+		||(type == "importance" && listType == "importance")) && result) {
+			todoContentList.removeChild(todoContent);
+		}
 }
 
 function deleteTodo(todoContent, todoCode) {
 	
+	$.ajax({
+		type: "delete",
+		url: `/api/v1/todolist/todo/${todoCode}`,
+		async: false,
+		dataType: "json",
+		success: (response) => {
+			if(response.data) {
+				todoContentList.removeChild(todoContent);
+			}
+		},
+		error: errorMessage
+	})
 }
+
+todoAddButton.onclick = () => {
+	modalContainer.classList.toggle("modal-visible");
+	
+	setModalEvent();
+}
+
+function clearModalTodoInputValue(modalTodoInput) {
+	modalTodoInput.value = "";
+}
+
+
+function setModalEvent() {
+	const modalCloseButton = modalContainer.querySelector(".modal-close-button");
+	const modalTodoInput = modalContainer.querySelector(".modal-todo-input");
+	const modalCommitButton = modalContainer.querySelector(".modal-commit-button");
+	
+	
+	modalCloseButton.onclick = () => {
+		modalContainer.classList.toggle("modal-visible");
+		
+		clearModalTodoInputValue(modalTodoInput);
+	}
+	
+	modalCommitButton.onclick = () => {
+		
+		data = {
+			importance: true,
+			todo: modalTodoInput.value
+		}
+		
+		addTodo(data);
+		modalCloseButton.onclick();
+	}
+ }
+ 
+ function addTodo(data) {
+	 $.ajax({
+		 type: "post",
+		 url: "/api/v1/todolist/todo",
+		 contentType: "application/json",
+		 data: JSON.stringify(todo),
+		 async: false,
+		 dataType: "json",
+		 success: (response) => {
+			 if(response.data) {
+				 todoContentList.innerHTML = "";
+				 load();
+			 }
+		 }
+	 })
+ }
+
