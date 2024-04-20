@@ -9,11 +9,12 @@ import com.study.security20240312youngpil.handler.exception.CustomValidationApiE
 import com.study.security20240312youngpil.web.dto.CMRespDto;
 
 @RestController
-@ControllerAdvice//컨트롤러전체를 여기서다잡아준다.
+@ControllerAdvice
 public class RestControllerExceptionHandler {
-
+	
+	//exceptionhandler에서 터지면 아래메소드에서 잡는다.
 	@ExceptionHandler(CustomValidationApiException.class)
 	public ResponseEntity<?> validationApiException(CustomValidationApiException e) {
-		return ResponseEntity.badRequest().body(new CMRespDto<>(-1, e.getMessage() + "hihi", e.getErrorMap()));
+		return ResponseEntity.ok().body(new CMRespDto<>(-1, e.getMessage() + "hi", e.getErrorMap()));
 	}
 }

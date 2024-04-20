@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.study.security20240312youngpil.service.auth.PrincipalDetails;
 
-@Controller
+@Controller	//화면띄워주는컨트롤러
 public class PageController {
 
-	@GetMapping({"/","/index"})				//프린시펄디테일스 가져와주는 어노테이션
-	public String loadIndex(Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+	@GetMapping({"/","/index"})
+	public String loadIndex(Model model,@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		model.addAttribute("principal",principalDetails);
 		return "index";
 	}

@@ -14,16 +14,16 @@ import org.springframework.util.StopWatch;
 public class TimerAop {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	//경로를 잡아준다						
-	@Pointcut("execution(* com.study.security20240312youngpil.web.controller..*..*(..))")
-	private void pointCut() {}
-	//어노테이션으로 경로를잡아주는 코드
+	
+	@Pointcut("execution(* com.study.security20240312youngpil.web.controller..*..*(..))")//경로를잡아주는것
+	private void pointCut()	{}
+	
 	@Pointcut("@annotation(com.study.security20240312youngpil.handler.aop.annotation.Timer)")
 	private void enableTimer() {}
 	
-	@Around("pointCut() || enableTimer()")
+	@Around("pointCut() || enableTimer()")//@pointcut에 메소드명과 동일해야작동한다.
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-		System.out.println("hihi");
+		
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		
@@ -39,5 +39,4 @@ public class TimerAop {
 				);
 		return result;
 	}
-	
 }

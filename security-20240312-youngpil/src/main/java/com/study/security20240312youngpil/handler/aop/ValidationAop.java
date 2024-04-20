@@ -1,6 +1,7 @@
 package com.study.security20240312youngpil.handler.aop;
 
 import java.util.HashMap;
+
 import java.util.Map;
 
 import org.aspectj.lang.JoinPoint;
@@ -21,39 +22,37 @@ import com.study.security20240312youngpil.handler.exception.CustomValidationApiE
 public class ValidationAop {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	
+
 	@Pointcut("@annotation(com.study.security20240312youngpil.handler.aop.annotation.ValidCheck)")
 	private void enableValid() {}
 	
 	@Before("enableValid()")
-	public void ValidBefore(JoinPoint joinpoint) {
-		
-		Object[] args = joinpoint.getArgs();
-		//매개변수들이 배열에 들어오게 함.
+	public void ValidBefore(JoinPoint joinPoint) {
+		//매개변수들이 배열에 들어오게함
+		Object[] args = joinPoint.getArgs();
 		
 		LOGGER.info(">>> 유효성 검사중 <<<");
 		
 		for(Object arg : args) {
 			if(arg.getClass() == BeanPropertyBindingResult.class) {
 				BindingResult bindingResult = (BindingResult)arg;
+			
 				if(bindingResult.hasErrors()) {
 					Map<String, String> errorMessage = new HashMap<String, String>();
 					bindingResult.getFieldErrors().forEach(error -> {
-						System.err.println("오류발생 필드명:" + error.getField());
-						System.err.println("오류발생 상태메세지:" + error.getDefaultMessage());
+						System.out.println("오류발생 필드명:" + error.getField());
+						System.out.println("오류발생 상태메세지:" + error.getDefaultMessage());
 						errorMessage.put(error.getField(), error.getDefaultMessage());
-					});	
+					});
 					//return ResponseEntity.ok().body(new CMRespDto<>(-1,"유효성 검사 실패",errorMessage));
-					throw new CustomValidationApiException("유효성 검사 실패", errorMessage);
+					throw new CustomValidationApiException("유효성 검사 실패",errorMessage);
 				}
-				
 			}
 		}
 	}
 	
-	
-	@AfterReturning(value = "enableValid()", returning = "returnObj")
-	public void afterReturn(JoinPoint joinPoint, Object returnObj) {
-		LOGGER.info("유효성 검사완료: {}", returnObj);
+	@AfterReturning(value = "enableValid()", returning = "returnObj") 
+		public void afterReturn(JoinPoint joinPoint, Object returnObj) {
+		LOGGER.info("유효성 검사완료: {}",returnObj);
 	}
 }

@@ -1,6 +1,7 @@
 package com.study.security20240312youngpil.service.auth;
 
 import java.util.ArrayList;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -16,14 +17,13 @@ import lombok.Data;
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
-	
-	
-	
-	private static final long serialVersionUID = -8490096719701750537L;
+	//충돌방지용 시리얼uid
+	private static final long serialVersionUID = 349113608586542254L;
+
 	private User user;
 	
 	private Map<String, Object> attributes;
-
+	
 	public PrincipalDetails(User user) {
 		this.user = user;
 	}
@@ -49,13 +49,13 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 //			};
 //			grantedAuthorities.add(authority);
 //		}
-		
 		user.getUserRoles().forEach(role -> {
 			grantedAuthorities.add(() -> role);
 		});
+		
 		return grantedAuthorities;
 	}
-	
+
 	@Override
 	public String getPassword() {
 		return user.getUser_password();
@@ -70,7 +70,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 	public boolean isAccountNonExpired() {
 		return true;
 		// 계정 만료 여부
-		// true: 만료안됨, false: 만료됨
+		// true: 만료 되지 않음, false: 만료
 	}
 
 	@Override
@@ -90,8 +90,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 	@Override
 	public boolean isEnabled() {
 		return true;
-		// 사용자 활성화 여부
-		// true: 활성화, false: 비활성화
+		// 사용자 활성 여부
+		// true: 활성화, false:비활성화
 	}
 	@Override
 	public Map<String, Object> getAttributes() {
@@ -101,7 +101,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 	public String getName() {
 		return user.getUser_name();
 	}
-
-
 	
+
 }

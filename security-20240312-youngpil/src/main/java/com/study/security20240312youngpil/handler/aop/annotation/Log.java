@@ -7,6 +7,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.aspectj.lang.annotation.Pointcut;
+
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })
 public @interface Log {

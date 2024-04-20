@@ -21,13 +21,13 @@ public class SignupReqDto {
 	@Email
 	private String email;
 	@NotBlank
-	@Pattern(regexp = "^[a-zA-z]{1}[a-zA-Z0-9_]{4,12}$")
+	@Pattern(regexp = "^[a-zA-Z]{1}[a-zA-Z0-9_]{4,12}$")
 	private String username;
 	@NotBlank
 	@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[-~!@#$%^&*_+=])[a-zA-Z\\d-~!@#$%^&*_+=]{8,16}$")
 	private String password;
 	
-	@AssertTrue(message = "아이디 중복확인이 되지 않았습니다.")
+	@AssertTrue(message = "아이디 중복확인이 되지 않았습니다.")//예외처리용 어노테이션
 	private boolean checkUsernameFlag;
 	
 	public User toEntity() {

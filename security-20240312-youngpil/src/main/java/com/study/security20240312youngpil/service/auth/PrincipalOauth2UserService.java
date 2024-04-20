@@ -2,6 +2,7 @@ package com.study.security20240312youngpil.service.auth;
 
 import java.util.Map;
 
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -17,19 +18,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
-public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
+@Service
+public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
-	
 	private final UserRepository userRepository;
 	
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-		//oAuth2User 유저를 리턴하는코드
+		// oauth2user 유저를 리턴하는거
 		OAuth2User oAuth2User = super.loadUser(userRequest);
-		log.info(">>> ClientRegistration: {} <<<",userRequest.getClientRegistration());
-		log.info(">>> oAuth2User: {} <<<",oAuth2User);
+		log.info(">>> ClientRegistration: {} <<<", userRequest.getClientRegistration());
+		log.info(">>> {} <<<", oAuth2User);
 		
 		String provider = null;
 		ClientRegistration clientRegistration = userRequest.getClientRegistration();
@@ -52,13 +52,13 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
 		if(provider.equalsIgnoreCase("google")) {
 			response = attributes;
 			id = (String)response.get("sub");
-		} else if (provider.equalsIgnoreCase("naver")) {
+		} else if(provider.equalsIgnoreCase("naver")) {
 			response = ((Map<String, Object>)attributes.get("response"));
 			id = (String)response.get("id");
 		} else {
 			throw new OAuth2AuthenticationException("provider Error!");
 		}
-		oauth2_id = provider +"-" + id;
+		oauth2_id = provider + "_" + id;
 		
 		try {
 			user = userRepository.findOAuth2UserByUsername(oauth2_id);
@@ -76,22 +76,20 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
 					.user_roles("ROLE_USER")
 					.user_provider(provider)
 					.build();
+			
 			boolean result = false;
 			try {
 				result = userRepository.save(user) > 0;
 				if(result) {
 					user = userRepository.findOAuth2UserByUsername(oauth2_id);
-				}else {
+				} else {
 					throw new OAuth2AuthenticationException("provider Error!");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
-		
 		return user;
 	}
-	
 	
 }

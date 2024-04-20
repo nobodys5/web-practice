@@ -9,7 +9,7 @@ import lombok.Getter;
 public class CustomValidationApiException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Map<String, String> errorMap;
 	
 	public CustomValidationApiException() {
@@ -18,9 +18,8 @@ public class CustomValidationApiException extends RuntimeException {
 	public CustomValidationApiException(String message) {
 		this(message, new HashMap<String, String>());
 	}
-	public CustomValidationApiException(String message, Map<String, String> errorMap) {
+	public CustomValidationApiException(String message, Map<String, String> erroMap) {
 		super(message);
-		this.errorMap = errorMap;
+		this.errorMap = erroMap;
 	}
-
 }

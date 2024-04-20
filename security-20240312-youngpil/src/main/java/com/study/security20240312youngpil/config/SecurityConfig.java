@@ -14,24 +14,25 @@ import com.study.security20240312youngpil.service.auth.PrincipalOauth2UserServic
 import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity
-@Configuration						//커스텀해주는것
+@Configuration
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
-	
+
 	private final PrincipalOauth2UserService principalOauth2UserService;
 	
-	@Bean
+	@Bean // 암호화시키는 역할
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Override
+	@Override				//매개변수들어온부분에대해서 아래코드로설정
 	protected void configure(HttpSecurity http) throws Exception {
+		//controller와 같은역할의 클래스
 		
 		http.csrf().disable();
 		//암호화,복호화
-		http.authorizeHttpRequests()// 요청이 들어왔을때 인증을 거치라는 
-		.antMatchers("/","index","/mypage/**") // 1) 우리가 지정한 요청(들)
+		http.authorizeHttpRequests()// 요청이 들어왔을때 인증을 거치라는 코드 
+		.antMatchers("/","/index","/mypage/**") // 1) 우리가 지정한 요청(들)
 		.authenticated() // 2) 인증을 거쳐라
 		.anyRequest() // 3) 다른 모든 요청들은
 		.permitAll() // 4) 모든 접근 권한을 부여하겠다.
@@ -39,12 +40,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		.formLogin() // 5) 로그인 방식은 form 로그인을 사용하겠다.
 		.loginPage("/auth/signin") // 6) 로그인 페이지 get요청을 통해 접근
 		.loginProcessingUrl("/auth/signin") // 7) 로그인 요청(post)
-		.failureHandler(new AuthFailerHandler())
+		.failureHandler(new AuthFailerHandler())//페일러핸들러에서 작성한코드를 여기서 적용시켜줌
 		.and()
 		.oauth2Login()
 		.userInfoEndpoint()
 		.userService(principalOauth2UserService)
 		.and()
-		.defaultSuccessUrl("/index");//성공하면 메인페이지로 가라는코드
+		.defaultSuccessUrl("/index");//성공하면 index페이지로 가라
+		
+	
+		
+		
+		
+		
+		
+		
 	}
 }
